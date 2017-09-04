@@ -57,12 +57,12 @@ public class PlayState extends State {
 	ArrayList<Tile>	tiles							= new ArrayList<>();
 	Image[]					images;
 	int							currentImage			= 0;
-	
-	boolean paintToolEnabled = false;
-	
-	ImageLibrary imgLib;
-	int libx = 0;
-	int liby = 0;
+
+	boolean					paintToolEnabled	= false;
+
+	ImageLibrary		imgLib;
+	int							libx							= 0;
+	int							liby							= 0;
 
 	protected PlayState(MapMaker game) {
 		super(game);
@@ -83,7 +83,7 @@ public class PlayState extends State {
 		currentBlock = new Block(game, 0, 0, 0, 0, blockSize, blockSize, currentLayer);
 		generateGrid();
 		loadImages();
-		imgLib = new ImageLibrary(game, images,5,0,0,blockSize,game.getHeight());
+		imgLib = new ImageLibrary(game, images, 5, 0, 0, blockSize, game.getHeight());
 	}
 
 	public void loadImages() {
@@ -121,7 +121,6 @@ public class PlayState extends State {
 		removeTile();
 		updateTiles();
 		updateCurrentBlock();
-		
 
 		imgLib.update();
 	}
@@ -140,7 +139,7 @@ public class PlayState extends State {
 	public void render(Graphics2D g) {
 		renderCurrentBlock(g);
 		renderTiles(g);
-		
+
 		renderText(g);
 		renderLibrary(g);
 		renderCurrentImage(g);
@@ -149,21 +148,22 @@ public class PlayState extends State {
 
 	public void renderLibrary(Graphics2D g) {
 		imgLib.render(g);
-		
-//		int xc = 29;
-//		int yc = 10;
-//
-//		int index = 0;
-//		for(int y = 0; y < yc; y++) {
-//			for(int x = 0; x < xc; x++) {
-//				AffineTransform at = new AffineTransform();
-//				at.translate(ox + x * blockSize * game.scale, oy + y * blockSize * game.scale);
-//				at.scale(game.scale, game.scale);
-//				g.drawImage(images[index], at, null);
-//				if(index < images.length)
-//					index++;
-//			}
-//		}
+
+		// int xc = 29;
+		// int yc = 10;
+		//
+		// int index = 0;
+		// for(int y = 0; y < yc; y++) {
+		// for(int x = 0; x < xc; x++) {
+		// AffineTransform at = new AffineTransform();
+		// at.translate(ox + x * blockSize * game.scale, oy + y * blockSize *
+		// game.scale);
+		// at.scale(game.scale, game.scale);
+		// g.drawImage(images[index], at, null);
+		// if(index < images.length)
+		// index++;
+		// }
+		// }
 	}
 
 	public void renderCenter(Graphics2D g) {
@@ -176,7 +176,7 @@ public class PlayState extends State {
 			try {
 				Point m = game.getMousePosition();
 				blockSizeScaled = blockSize * (int)game.scale;
-	
+
 				if(m.x > ox) {
 					diff = m.x - ox;
 					cx = (int)(Math.floor(diff / blockSizeScaled));
@@ -193,7 +193,7 @@ public class PlayState extends State {
 					diff = oy - m.y;
 					cy = -(int)(Math.floor(diff / blockSizeScaled)) - 1;
 				}
-	
+
 				currentBlock.x = cx * blockSize;
 				currentBlock.y = cy * blockSize;
 				currentBlock.xl = cx;
@@ -209,9 +209,9 @@ public class PlayState extends State {
 		if(paintToolEnabled)
 			currentBlock.render(g);
 	}
-	
+
 	public void renderCurrentImage(Graphics2D g) {
-//		int previewScale = game.scale;
+		// int previewScale = game.scale;
 		int previewScale = 3;
 		int xPos = (int)(imgLib.x - (previewScale * blockSize));
 		int yPos = 0;
@@ -222,7 +222,7 @@ public class PlayState extends State {
 
 		AffineTransform at = new AffineTransform();
 		at.translate(xPos, yPos);
-		at.scale(previewScale,previewScale);
+		at.scale(previewScale, previewScale);
 		g.drawImage(images[currentImage], at, null);
 
 		// g.setColor(Color.DARK_GRAY);
@@ -250,13 +250,13 @@ public class PlayState extends State {
 		g.setColor(new Color(1f, 1f, 1f, 0.5f));
 		g.drawRect(x, y, winW, winH);
 
-		Util.drawText(x+10, 1 * 20 + 10, "Scale: " + game.scale, g);
-		Util.drawText(x+10, 2 * 20 + 10, "Speed: " + speed, g);
-		Util.drawText(x+10, 3 * 20 + 10, "Layer: " + currentLayer, g);
-		Util.drawText(x+10, 4 * 20 + 10, "xBlocks: " + xBlocks, g);
-		Util.drawText(x+10, 5 * 20 + 10, "yBlocks: " + yBlocks, g);
-		Util.drawText(x+10, 6 * 20 + 10, "Block Size: " + blockSize + "x" + blockSize, g);
-		Util.drawText(x+10, 7 * 20 + 10, "Tiles: " + tiles.size(), g);
+		Util.drawText(x + 10, 1 * 20 + 10, "Scale: " + game.scale, g);
+		Util.drawText(x + 10, 2 * 20 + 10, "Speed: " + speed, g);
+		Util.drawText(x + 10, 3 * 20 + 10, "Layer: " + currentLayer, g);
+		Util.drawText(x + 10, 4 * 20 + 10, "xBlocks: " + xBlocks, g);
+		Util.drawText(x + 10, 5 * 20 + 10, "yBlocks: " + yBlocks, g);
+		Util.drawText(x + 10, 6 * 20 + 10, "Block Size: " + blockSize + "x" + blockSize, g);
+		Util.drawText(x + 10, 7 * 20 + 10, "Tiles: " + tiles.size(), g);
 	}
 
 	public void move() {
@@ -293,7 +293,7 @@ public class PlayState extends State {
 			tiles.add(t);
 
 			// Sort Tiles
-			Collections.sort(tiles, (t1, t2)->t1.getLayer() - t2.getLayer());
+			Collections.sort(tiles, (t1, t2) -> t1.getLayer() - t2.getLayer());
 		}
 	}
 
@@ -306,7 +306,7 @@ public class PlayState extends State {
 			}
 		}
 	}
-	
+
 	public void refreshCanvas() {
 		resetOXOY();
 		tiles = new ArrayList<Tile>();
@@ -339,15 +339,15 @@ public class PlayState extends State {
 
 		return images;
 	}
-	
+
 	public void zoomIn() {
 		if(game.scale < maxScale) {
-			game.scale+= 1f;
+			game.scale += 1f;
 			if(game.scale > maxScale)
 				game.scale = maxScale;
 		}
 	}
-	
+
 	public void zoomOut() {
 		if(game.scale > minScale) {
 			game.scale -= 1f;
@@ -415,7 +415,7 @@ public class PlayState extends State {
 			else
 				paintToolEnabled = true;
 		}
-		
+
 		if(e.getKeyCode() == KeyEvent.VK_W)
 			up = false;
 
@@ -486,7 +486,7 @@ public class PlayState extends State {
 					currentImage--;
 			}
 		}
-		
+
 		if(!control && !shift && imgLib.hasMouse())
 			imgLib.mouseWheelMoved(e);
 	}
