@@ -339,6 +339,22 @@ public class PlayState extends State {
 
 		return images;
 	}
+	
+	public void zoomIn() {
+		if(game.scale < maxScale) {
+			game.scale+= 1f;
+			if(game.scale > maxScale)
+				game.scale = maxScale;
+		}
+	}
+	
+	public void zoomOut() {
+		if(game.scale > minScale) {
+			game.scale -= 1f;
+			if(game.scale < minScale)
+				game.scale = minScale;
+		}
+	}
 
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
@@ -454,11 +470,7 @@ public class PlayState extends State {
 		boolean direction = e.getWheelRotation() < 0; // true = up.. false = down..
 		if(direction) {
 			if(control) {
-				if(game.scale < maxScale) {
-					game.scale+= 1f;
-					if(game.scale > maxScale)
-						game.scale = maxScale;
-				}
+				zoomIn();
 			}
 			else if(shift) {
 				if(currentImage < images.length)
@@ -467,11 +479,7 @@ public class PlayState extends State {
 		}
 		else {
 			if(control) {
-				if(game.scale > minScale) {
-					game.scale -= 1f;
-					if(game.scale < minScale)
-						game.scale = minScale;
-				}
+				zoomOut();
 			}
 			else if(shift) {
 				if(currentImage > 0)
