@@ -28,7 +28,7 @@ public class EngineX implements Runnable {
 
 	public int						width							= 800;
 	public int						height						= 600;
-	public float						scale							= 1;
+	public float					scale							= 1;
 	public String					gameName					= "EngineX";
 	public int						windowTitleHeight	= 0;
 

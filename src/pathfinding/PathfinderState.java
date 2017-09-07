@@ -8,16 +8,16 @@ import enginex.EngineX;
 import enginex.State;
 
 public class PathfinderState extends State {
-	ArrayList<Node> nodes = new ArrayList<Node>();
+	ArrayList<Node>	nodes;
 
-	int		scale	= 1;
-	int		xNodes	= 10 * scale;
-	int		yNodes	= 10 * scale;
-	float	nw		= ((float)game.getWidth()) / xNodes;
-	float	nh		= ((float)game.getHeight()) / yNodes;
+	int							scale				= 2;
+	int							xNodes			= 10;
+	int							yNodes			= 10;
+	float						nw					= ((float)game.getWidth()) / xNodes;
+	float						nh					= ((float)game.getHeight()) / yNodes;
 
-	Builder	builder	= new Builder(game);
-	Beatle	beatle	= new Beatle(game);
+	Builder					builder			= new Builder(game);
+	PathFinder			pathfinder	= new PathFinder(game);
 
 	protected PathfinderState(EngineX game) {
 		super(game);
@@ -27,41 +27,40 @@ public class PathfinderState extends State {
 	}
 
 	void addNodes() {
-		for(int y = 0; y < yNodes; y++) {
-			for(int x = 0; x < xNodes; x++) {
-				//	nodes.add(new Node(game, x * nw, y * nh, nw, nh));
+		nodes = new ArrayList<>();
+		
+		for(int y = 0; y < yNodes; y++)
+			for(int x = 0; x < xNodes; x++)
 				nodes.add(new Node(game, x, y, nw, nh));
-			}
-		}
 	}
 
 	public void update() {
 		try {
-			for(Node n:nodes)
-				n.update();
-
 			builder.update();
-			beatle.update();
+			pathfinder.update();
 		}
-		catch(Exception e) {}
+		catch(Exception e) {
+		}
 	}
 
 	public void render(Graphics2D g) {
 		try {
 			for(Node n:nodes)
 				n.render(g);
-			beatle.render(g);
+			
+			pathfinder.render(g);
 		}
-		catch(Exception e) {}
+		catch(Exception e) {
+		}
 	}
 
 	void resetGame() {
 		try {
-			nodes = new ArrayList<>();
 			addNodes();
-			beatle = new Beatle(game);
+			pathfinder = new PathFinder(game);
 		}
-		catch(Exception e) {}
+		catch(Exception e) {
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {
@@ -73,6 +72,7 @@ public class PathfinderState extends State {
 			game.exit();
 		}
 
-		beatle.keyReleased(e);
+		// START PathFinding!!!
+		pathfinder.keyReleased(e);
 	}
 }

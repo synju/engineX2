@@ -9,16 +9,25 @@ import enginex.GameObject;
 
 @SuppressWarnings("serial")
 public class Builder extends GameObject {
-	boolean	mouseDown	= false;
-	int		currentKey	= 1;
+	boolean	mouseDown		= false;
+	int			currentKey	= 1;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param game
+	 */
 	public Builder(EngineX game) {
 		super(game);
 	}
 
+	/**
+	 * Basic update Method of the Builder.. Only works when "mouseDown" is TRUE
+	 */
 	public void update() {
 		try {
 			if(mouseDown) {
+				// START NODE TYPE
 				if(currentKey == 1) {
 					for(Node n:getState().nodes) {
 						if(n.type == Node.START) {
@@ -26,12 +35,16 @@ public class Builder extends GameObject {
 						}
 					}
 					currentNodeHover().type = Node.START;
-					getBeatle().startXY = currentNodeHover().getCenter();
-					getBeatle().visible = true;
+					getPathFinder().startXY = currentNodeHover().getCenter();
+					getPathFinder().visible = true;
 				}
+
+				// CLOSED NODE TYPE... Basically a Wall...
 				if(currentKey == 2) {
 					currentNodeHover().type = Node.CLOSED;
 				}
+
+				// END NODE TYPE... The Destination Node....
 				if(currentKey == 3) {
 					for(Node n:getState().nodes) {
 						if(n.type == Node.END) {
@@ -39,20 +52,34 @@ public class Builder extends GameObject {
 						}
 					}
 					currentNodeHover().type = Node.END;
-					getState().beatle.endXY = currentNodeHover().getCenter();
+					getState().pathfinder.endXY = currentNodeHover().getCenter();
 				}
+
+				// OPEN NODE TYPE... Used as an Eraser in the Builder.....
 				if(currentKey == 4) {
 					currentNodeHover().type = Node.OPEN;
 				}
 			}
 		}
-		catch(Exception e) {}
+		catch(Exception e) {
+		}
 	}
 
-	Beatle getBeatle() {
-		return getState().beatle;
+	/**
+	 * Gets the PathFinder from the game... Remember: the pathfinder is the Entity
+	 * that does the pathFinding...
+	 * 
+	 * @return
+	 */
+	public PathFinder getPathFinder() {
+		return getState().pathfinder;
 	}
 
+	/**
+	 * Gets the CURRENT NODE being HOVERED OVER
+	 * 
+	 * @return
+	 */
 	public Node currentNodeHover() {
 		Point m = game.getMousePosition();
 		for(Node n:getState().nodes)
@@ -62,18 +89,32 @@ public class Builder extends GameObject {
 		return null;
 	}
 
+	/**
+	 * Gets the PathFinderState of the game, may as well be any Main State....
+	 * 
+	 * @return
+	 */
 	public PathfinderState getState() {
 		return (PathfinderState)game.stateMachine.getCurrentState();
 	}
 
+	/**
+	 * Changes the mouseDown Boolean to true if Mouse Button is Pressed Down.....
+	 */
 	public void mousePressed(MouseEvent e) {
 		mouseDown = true;
 	}
 
+	/**
+	 * Changes the mouseDown Boolean to false if Mouse Button is Released.....
+	 */
 	public void mouseReleased(MouseEvent e) {
 		mouseDown = false;
 	}
 
+	/**
+	 * Listens for the keyPress Events in order to determine what Node to place..
+	 */
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_1) {
 			currentKey = 1;
@@ -96,11 +137,14 @@ public class Builder extends GameObject {
 			currentKey = 6;
 		}
 
+		/**
+		 * Changes Visibility of Beatle...
+		 */
 		if(e.getKeyCode() == KeyEvent.VK_C) {
 			for(Node n:getState().nodes) {
 				n.type = Node.OPEN;
 			}
-			getBeatle().visible = false;
+			getPathFinder().visible = false;
 		}
 	}
 }
