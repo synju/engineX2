@@ -17,6 +17,6 @@ public class Pathfinding extends EngineX {
 	}
 	
 	public static void main(String[] args) {
-		new Pathfinding("Pathfinder", 1024, 768).init();
+		new Pathfinding("Pathfinder", 200, 200).init();
 	}
 }

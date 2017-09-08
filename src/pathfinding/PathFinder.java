@@ -20,8 +20,8 @@ public class PathFinder extends GameObject {
 	ArrayList<Node>	openList						= new ArrayList<Node>();
 	ArrayList<Node>	closedList					= new ArrayList<Node>();
 	ArrayList<Node>	deadList						= new ArrayList<Node>();
-
 	ArrayList<Node>	pathNodes						= new ArrayList<>();
+	ArrayList<Node>	nodes								= new ArrayList<>(); 
 
 	boolean					visible							= false;
 	boolean					pathFindingEnabled	= false;
@@ -39,14 +39,19 @@ public class PathFinder extends GameObject {
 	boolean					canSearch						= false;
 	boolean					canUpdate						= false;
 
-//	int							i										= 0;
-
 	Node						currentNode;
 
 	boolean					printPathNodes			= false;
 
 	public PathFinder(EngineX game) {
 		super(game);
+	}
+
+	public ArrayList<Node> getPathNodes(ArrayList<Node> nodes) {
+		this.nodes = nodes;
+		pathFindingEnabled = true;
+		pathfind();
+		return closedList;
 	}
 
 	public void init() {
@@ -76,58 +81,25 @@ public class PathFinder extends GameObject {
 	 */
 	void pathfind() {
 		if(pathFindingEnabled) {
-			if(!slowSearchEnabled) {
+			System.out.println("finding shortest path...");
+			
+			while(!pathFound) {
 				while(!stage3Complete) {
 					if(canSearch()) {
-						/**
-						 * Calculate H, G, and Finally F Scores...
-						 * AND... Add Start Node to Closed List!
-						 * AND... Add Initial Surrounding Nodes to Open List!
-						 */
 						if(!stage1Complete)
 							stage1();
 
-						/**
-						 * Cycles through All Nodes until END Node is reached.
-						 * Adjusts Scores Accordingly.
-						 */
 						if(stage1Complete && !stage2Complete)
 							stage2();
 
-						/**
-						 * Last Step... Adds Good Nodes to PathList
-						 */
 						if(stage2Complete && !stage3Complete)
 							stage3();
 					}
 				}
 			}
-			else {
-				if(!stage3Complete) {
-					if(canSearch()) {
-						/**
-						 * Calculate H, G, and Finally F Scores...
-						 * AND... Add Start Node to Closed List!
-						 * AND... Add Initial Surrounding Nodes to Open List!
-						 */
-						if(!stage1Complete)
-							stage1();
-
-						/**
-						 * Cycles through All Nodes until END Node is reached.
-						 * Adjusts Scores Accordingly.
-						 */
-						if(stage1Complete && !stage2Complete)
-							stage2();
-
-						/**
-						 * Last Step... Adds Good Nodes to PathList
-						 */
-						if(stage2Complete && !stage3Complete)
-							stage3();
-					}
-				}
-			}
+			
+			System.out.println("shortest path found...");
+			pathFindingEnabled = false;
 		}
 	}
 
@@ -177,7 +149,6 @@ public class PathFinder extends GameObject {
 		if(currentNode.type == Node.END) {
 			stage2Complete = true;
 			pathFound = true;
-			// System.out.println("Path Found!");
 		}
 		else {
 			// Move Node to closedList
@@ -227,7 +198,7 @@ public class PathFinder extends GameObject {
 
 	/**
 	 * Stage 3
-	 * Last Step... Adds Good Nodes to PathList
+	 * Last Step... Set parent for each node in the pathNodes.
 	 */
 	void stage3() {
 		for(Node n:getNodes())
@@ -305,7 +276,10 @@ public class PathFinder extends GameObject {
 	}
 
 	public ArrayList<Node> getNodes() {
-		return getState().nodes;
+		if(nodes.isEmpty())
+			return getState().nodes;
+		else
+			return nodes;
 	}
 
 	public boolean nodeInList(Node a, ArrayList<Node> list) {
@@ -339,9 +313,8 @@ public class PathFinder extends GameObject {
 			// Used for auto pathfinding...
 			// update();
 
-			if(!pathFindingEnabled) {
+			if(!pathFindingEnabled)
 				pathFindingEnabled = true;
-			}
 		}
 	}
 }

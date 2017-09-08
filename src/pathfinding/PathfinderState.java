@@ -71,6 +71,12 @@ public class PathfinderState extends State {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			game.exit();
 		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_S) {
+			ArrayList<Node> pathNodes = pathfinder.getPathNodes(nodes);
+			for(Node n:pathNodes)
+				System.out.println(n.x + ":" + n.y);
+		}
 
 		// START PathFinding!!!
 		pathfinder.keyReleased(e);
