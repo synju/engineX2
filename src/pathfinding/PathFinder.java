@@ -1,8 +1,5 @@
 package pathfinding;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +18,7 @@ public class PathFinder extends GameObject {
 	ArrayList<Node>	closedList					= new ArrayList<Node>();
 	ArrayList<Node>	deadList						= new ArrayList<Node>();
 	ArrayList<Node>	pathNodes						= new ArrayList<>();
-	ArrayList<Node>	nodes								= new ArrayList<>(); 
+	ArrayList<Node>	nodes								= new ArrayList<>();
 
 	boolean					visible							= false;
 	boolean					pathFindingEnabled	= false;
@@ -29,9 +26,6 @@ public class PathFinder extends GameObject {
 
 	float						w										= 0;
 	float						h										= 0;
-
-	Point						startXY;
-	Point						endXY;
 
 	boolean					stage1Complete			= false;
 	boolean					stage2Complete			= false;
@@ -42,9 +36,16 @@ public class PathFinder extends GameObject {
 	Node						currentNode;
 
 	boolean					printPathNodes			= false;
-
+	boolean 				noPath 							= false;
+	
 	public PathFinder(EngineX game) {
 		super(game);
+		resetNodes(nodes);
+	}
+
+	public PathFinder(EngineX game, ArrayList<Node> nodes) {
+		super(game);
+		resetNodes(nodes);
 	}
 
 	public ArrayList<Node> getPathNodes(ArrayList<Node> nodes) {
@@ -71,9 +72,6 @@ public class PathFinder extends GameObject {
 	public void update() {
 		// Only Run Once...
 		init();
-
-		// Only Run if pathFindingEnabled is true...
-		pathfind();
 	}
 
 	/** 
@@ -82,10 +80,9 @@ public class PathFinder extends GameObject {
 	void pathfind() {
 		if(pathFindingEnabled) {
 			System.out.println("finding shortest path...");
-			
-			while(!pathFound) {
-				while(!stage3Complete) {
-					if(canSearch()) {
+			if(canSearch()) {
+				while(!pathFound && !noPath) {
+					while(!stage3Complete) {
 						if(!stage1Complete)
 							stage1();
 
@@ -97,10 +94,20 @@ public class PathFinder extends GameObject {
 					}
 				}
 			}
-			
-			System.out.println("shortest path found...");
+
+			if(!noPath)
+				System.out.println("shortest path found...");
+			else
+				System.out.println("no path...");
 			pathFindingEnabled = false;
+			pathFound = false;
 		}
+	}
+	
+	public void resetNodes(ArrayList<Node> nodes) {
+		for(Node n:nodes)
+			if(n.type == Node.PATH || n.type == Node.SCOUTED_AREA || n.type == Node.HOVER)
+				n.type = Node.OPEN;
 	}
 
 	/**
@@ -140,7 +147,13 @@ public class PathFinder extends GameObject {
 	 */
 	void stage2() {
 		// Get node with lowest fScore
-		currentNode = openList.get(openList.size() - 1);
+		try {
+			currentNode = openList.get(openList.size() - 1);
+		}
+		catch(Exception e) {
+			stage3Complete = true;
+			noPath = true;
+		}
 
 		for(Node n:openList)
 			if(n.fScore < currentNode.fScore)
@@ -293,26 +306,9 @@ public class PathFinder extends GameObject {
 		return false;
 	}
 
-	public void render(Graphics2D g) {
-		if(visible) {
-			if(startXY != null) {
-				g.setColor(Color.GREEN);
-				g.fillOval((int)(startXY.x - w / 2), (int)(startXY.y - h / 2), (int)w, (int)h);
-			}
-
-			if(endXY != null) {
-				g.setColor(Color.BLACK);
-				g.fillOval((int)(endXY.x - w / 2), (int)(endXY.y - h / 2), (int)w, (int)h);
-			}
-		}
-	}
-
 	public void keyReleased(KeyEvent e) {
 		// START PathFinding!!!
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			// Used for auto pathfinding...
-			// update();
-
 			if(!pathFindingEnabled)
 				pathFindingEnabled = true;
 		}

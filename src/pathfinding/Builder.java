@@ -35,7 +35,6 @@ public class Builder extends GameObject {
 						}
 					}
 					currentNodeHover().type = Node.START;
-					getPathFinder().startXY = currentNodeHover().getCenter();
 					getPathFinder().visible = true;
 				}
 
@@ -52,7 +51,6 @@ public class Builder extends GameObject {
 						}
 					}
 					currentNodeHover().type = Node.END;
-					getState().pathfinder.endXY = currentNodeHover().getCenter();
 				}
 
 				// OPEN NODE TYPE... Used as an Eraser in the Builder.....

@@ -334,7 +334,7 @@ public class Node extends GameObject {
 			g.setColor(new Color(0, 0, 100));
 		}
 		if(type == PATH) {
-			g.setColor(new Color(0, 50, 0));
+			g.setColor(new Color(50, 100, 50));
 		}
 		g.fillRect((int)(x * w), (int)(y * h), (int)w, (int)h);
 

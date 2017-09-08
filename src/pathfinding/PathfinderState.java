@@ -11,8 +11,8 @@ public class PathfinderState extends State {
 	ArrayList<Node>	nodes;
 
 	int							scale				= 2;
-	int							xNodes			= 10;
-	int							yNodes			= 10;
+	int							xNodes			= 16;
+	int							yNodes			= 16;
 	float						nw					= ((float)game.getWidth()) / xNodes;
 	float						nh					= ((float)game.getHeight()) / yNodes;
 
@@ -57,7 +57,7 @@ public class PathfinderState extends State {
 	void resetGame() {
 		try {
 			addNodes();
-			pathfinder = new PathFinder(game);
+			pathfinder = new PathFinder(game,nodes);
 		}
 		catch(Exception e) {
 		}
@@ -72,13 +72,9 @@ public class PathfinderState extends State {
 			game.exit();
 		}
 		
-		if(e.getKeyCode() == KeyEvent.VK_S) {
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			pathfinder = new PathFinder(game, nodes);
 			ArrayList<Node> pathNodes = pathfinder.getPathNodes(nodes);
-			for(Node n:pathNodes)
-				System.out.println(n.x + ":" + n.y);
 		}
-
-		// START PathFinding!!!
-		pathfinder.keyReleased(e);
 	}
 }
