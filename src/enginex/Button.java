@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
 public class Button extends GameObject {
 	EngineX	game;
 	
-	boolean	hover				= false;
+	public boolean	hover				= false;
 	
 	boolean	hasSound		= false;
 	boolean	soundPlayed	= false;
