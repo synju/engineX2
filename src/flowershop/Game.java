@@ -12,8 +12,9 @@ public class Game extends EngineX {
 	public ProfileManager	profileManager;
 
 	Game() {
-		super("Flower Shop", 800, 600, false);
-		window.setLocation(2000, 300);
+		super("Flower Shop", 800, 600, false, false);
+		window.setVisible(true);
+//		window.setLocation(-1100, 200);
 	}
 
 	public void init() {

@@ -74,7 +74,7 @@ public class PathfinderState extends State {
 		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			pathfinder = new PathFinder(game, nodes);
-			ArrayList<Node> pathNodes = pathfinder.getPathNodes(nodes);
+//			ArrayList<Node> pathNodes = pathfinder.getPathNodes(nodes);
 		}
 	}
 }
