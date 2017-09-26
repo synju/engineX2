@@ -60,6 +60,8 @@ public class MenuState extends State {
 	public void update() {
 		initialize();
 		
+		game.profileManager.update();
+		
 		// Buttons
 		for(Button b:buttons)
 			b.update();
@@ -78,32 +80,43 @@ public class MenuState extends State {
 		// Buttons
 		for(Button b:buttons)
 			b.render(g);
+		
+		// Profile Manager
+		game.profileManager.render(g);
 	}
 	
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			game.exit();
+			if(game.profileManager.visible)
+				game.profileManager.toggleOff();
+			else
+				game.exit();
 		}
 	}
 	
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1) {
-			// Play Button Clicked...
-			if(playButton.hover) {
-				game.stateMachine.setState(game.PLAY);
-				System.out.println("Play!!!");
-			}
-			
-			// Load Button Clicked...
-			if(profileButton.hover) {
+			if(!game.profileManager.visible) {
+				// Play Button Clicked...
+				if(playButton.hover) {
+					// Change to play state...
+					game.stateMachine.setState(game.PLAY);
+				}
 				
-				System.out.println("Profiles!!!");
+				// Load Button Clicked...
+				if(profileButton.hover) {
+					// Show Profiles...
+					game.profileManager.toggleOn();
+				}
+				
+				// Quit Button Clicked...
+				if(quitButton.hover) {
+					// Quit Game
+					game.exit();
+				}
 			}
-			
-			// Quit Button Clicked...
-			if(quitButton.hover) {
-				System.out.println("Quit!!!");
-				game.exit();
+			else {
+				game.profileManager.mousePressed(e);
 			}
 		}
 	}

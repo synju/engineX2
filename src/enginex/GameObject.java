@@ -2,6 +2,7 @@ package enginex;
 
 import java.awt.Component;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -53,6 +54,13 @@ public class GameObject extends Component implements KeyListener, MouseListener,
 		if(this.bounds.intersects(bounds)) {
 			return true;
 		}
+		return false;
+	}
+	
+	public boolean contains(Point mousePosition) {
+		Point m = mousePosition;
+		if(m.x > this.x && m.x < this.x + this.w && m.y > this.y && m.y < this.y + this.h)
+			return true;
 		return false;
 	}
 

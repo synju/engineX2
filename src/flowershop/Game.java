@@ -3,6 +3,10 @@ package flowershop;
 import enginex.EngineX;
 
 public class Game extends EngineX {
+	// Window Positions
+	public static final int LEFT = 2250;
+	public static final int RIGHT = 2250;
+	
 	MenuState							menuState;
 	PlayState							playState;
 
@@ -14,7 +18,7 @@ public class Game extends EngineX {
 	Game() {
 		super("Flower Shop", 800, 600, false, false);
 		window.setVisible(true);
-//		window.setLocation(-1100, 200);
+//		window.setLocation(RIGHT, 200);
 	}
 
 	public void init() {
