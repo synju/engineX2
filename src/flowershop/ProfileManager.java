@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import enginex.Button;
 import enginex.FileManager;
 import enginex.GameObject;
 import enginex.Util;
@@ -30,7 +31,13 @@ public class ProfileManager extends GameObject {
 	int														h;
 	boolean												visible					= false;
 	FileManager										fm;
+	Profile												defaultProfile;
 	
+	// Buttons
+	ArrayList<Button>							buttons;
+	Button												createProfileButton;
+	
+	// Constructor
 	ProfileManager(Game game) {
 		super(game);
 		this.game = game;
@@ -39,19 +46,56 @@ public class ProfileManager extends GameObject {
 		this.x = game.width / 2 - this.w / 2;
 		this.y = 100;
 		fm = new FileManager();
-		test();
+		loadProfiles();
+		setInitialProfile();
+		createProfileManagerItems();
+		createButtons();
 	}
 	
-	public void test() {
-		ArrayList<String> names = getFileNames();
-		for(String n:names) {
-			profiles.add(new Profile(game, deserialize(n)));
-		}
+	// Initialize Initial Profile
+	void setInitialProfile() {
+		defaultProfile = new Profile(game, "default");
 		
-		// ProfileData pd = new ProfileData("moo", 19, new ArrayList<Flower>());
-		// serialize(pd);
+		if(profiles.size() > 0) {
+			setCurrentProfile(profiles.get(0));
+		}
+		else {
+			profiles.add(defaultProfile);
+			setCurrentProfile(defaultProfile);
+		}
 	}
 	
+	// Create Buttons
+	void createButtons() {
+		buttons = new ArrayList<>();
+		
+		createProfileButton = new Button(game, 50, 50);
+		buttons.add(createProfileButton);
+	}
+	
+	// Load All Profiles
+	void loadProfiles() {
+		// Clear Profiles Loaded...
+		profiles = new ArrayList<>();
+		plist = new ArrayList<>();
+		
+		// Get Profiles Available
+		ArrayList<String> names = getFileNames();
+		
+		// Create them all from save data
+		for(String n:names) {
+			profiles.add(loadProfile(n));
+		}
+	}
+	
+	// Create ProfileManagerItems
+	public void createProfileManagerItems() {
+		for(int i = 0; i < profiles.size(); i++) {
+			plist.add(new ProfileManagerItem(game, x, y + h + (h * i), w, h, profiles.get(i).name, this, profiles.get(i)));
+		}
+	}
+	
+	// Get list of profiles saved on disc
 	public ArrayList<String> getFileNames() {
 		ArrayList<String> fileNames = new ArrayList<String>();
 		
@@ -75,9 +119,11 @@ public class ProfileManager extends GameObject {
 		return newFileNames;
 	}
 	
-	public void serialize(ProfileData pd) {
+	// Save Profile
+	public void saveProfile(Profile profile) {
+		ProfileData pd = profile.getProfileData();
 		try {
-			FileOutputStream fileOut = new FileOutputStream("/saveData/" + pd.name + ".profile");
+			FileOutputStream fileOut = new FileOutputStream("./saveData/" + pd.name + ".profile");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(pd);
 			out.close();
@@ -89,10 +135,13 @@ public class ProfileManager extends GameObject {
 		}
 	}
 	
-	public ProfileData deserialize(String name) {
+	// Load Profile
+	public Profile loadProfile(String name) {
+		Profile profile = null;
+		
 		ProfileData pd = null;
 		try {
-			FileInputStream fileIn = new FileInputStream("/saveData/" + name + ".profile");
+			FileInputStream fileIn = new FileInputStream("./saveData/" + name + ".profile");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			pd = (ProfileData)in.readObject();
 			in.close();
@@ -100,54 +149,48 @@ public class ProfileManager extends GameObject {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+			game.exit();
 		}
 		
-		return pd;
+		profile = new Profile(game, pd);
+		
+		return profile;
 	}
 	
+	// Hide Profile Manager
 	public void toggleOff() {
 		if(visible)
 			visible = false;
 	}
 	
+	// Show Profile Manager
 	public void toggleOn() {
 		if(!visible)
 			visible = true;
-	}
-	
-	public void setProfile() {
-		
 	}
 	
 	public ArrayList<Profile> getProfiles() {
 		return profiles;
 	}
 	
-	public Profile getProfile(int index) {
-		Profile selectedProfile = null;
-		
-		return selectedProfile;
-	}
-	
 	public Profile getCurrentProfile() {
 		return currentProfile;
 	}
 	
-	@SuppressWarnings("unused")
-	private void loadProfiles() {
-		for(int i = 0; i < profiles.size() - 1; i++) {
-			plist.add(new ProfileManagerItem(game, x, y + h + (h * i), w, h, profiles.get(i).name, this, profiles.get(i)));
-		}
-	}
-	
-	public void loadProfile(Profile selectedProfile) {
+	public void setCurrentProfile(Profile selectedProfile) {
 		currentProfile = selectedProfile;
 		visible = false;
 	}
 	
 	public void update() {
+		// ProfileManagerItems
 		for(ProfileManagerItem p:plist) {
 			p.update();
+		}
+		
+		// Buttons
+		for(Button b:buttons) {
+			b.update();
 		}
 	}
 	
@@ -161,16 +204,27 @@ public class ProfileManager extends GameObject {
 			g.setColor(Color.white);
 			Util.drawText("Profiles", x + 10, y + 37, 30, g);
 			
+			// Render Profiles
 			for(ProfileManagerItem p:plist) {
 				p.render(g);
+			}
+			
+			// Buttons
+			for(Button b:buttons) {
+				b.render(g);
 			}
 		}
 	}
 	
 	public void mousePressed(MouseEvent e) {
+		// Buttons (Done Individually!!!)
+		if(createProfileButton.hover)
+			System.out.println("click");
+		
+		// Profiles
 		for(ProfileManagerItem p:plist) {
 			if(p.hover) {
-				loadProfile(p.profile);
+				setCurrentProfile(p.profile);
 			}
 		}
 	}

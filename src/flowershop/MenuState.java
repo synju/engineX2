@@ -15,6 +15,7 @@ import enginex.State;
 public class MenuState extends State {
 	// Game
 	Game							game;
+	boolean						renderEnabled				= true;
 	
 	// Logo and Sky background
 	Image							logoImage						= new ImageIcon("res/flowershop/logo.png").getImage();
@@ -68,21 +69,23 @@ public class MenuState extends State {
 	}
 	
 	public void render(Graphics2D g) {
-		// Smooth Images
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		
-		// Background
-		g.drawImage(skyBackgroundImage, 0, 0, null);
-		
-		// Logo
-		g.drawImage(logoImage, 80, 165, null);
-		
-		// Buttons
-		for(Button b:buttons)
-			b.render(g);
-		
-		// Profile Manager
-		game.profileManager.render(g);
+		if(renderEnabled) {
+			// Smooth Images
+			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+			
+			// Background
+			g.drawImage(skyBackgroundImage, 0, 0, null);
+			
+			// Logo
+			g.drawImage(logoImage, 80, 165, null);
+			
+			// Buttons
+			for(Button b:buttons)
+				b.render(g);
+			
+			// Profile Manager
+			game.profileManager.render(g);
+		}
 	}
 	
 	public void keyPressed(KeyEvent e) {

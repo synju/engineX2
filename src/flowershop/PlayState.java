@@ -23,7 +23,7 @@ public class PlayState extends State {
 	}
 
 	public void create() {
-
+//		System.out.println(game.profileManager.getCurrentProfile().name);
 	}
 
 	public void update() {

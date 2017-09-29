@@ -24,9 +24,16 @@ public class Button extends GameObject {
 
 	Point		m;
 
+	public Button(EngineX game, int w, int h) {
+		super(game);
+		this.game = game;
+		this.x = 0;
+		this.y = 0;
+		this.w = w;
+		this.h = h;
+	}
+	
 	public Button(EngineX game, int x, int y, int w, int h) {
-
-
 		super(game);
 		this.game = game;
 		this.x = x;
@@ -66,11 +73,16 @@ public class Button extends GameObject {
 		if((m != null) && contains(m)) {
 			hover = true;
 			playSound();
-			}
-			else {
-			soundPlayed = false;
-			}
 		}
+		else {
+			soundPlayed = false;
+		}
+	}
+	
+	public void setLocation(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 	
 	public void setImages(String defaultImagePath, String hoverImagePath) {
 		defaultImage = new ImageIcon(defaultImagePath).getImage();
