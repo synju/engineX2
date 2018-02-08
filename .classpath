@@ -20,5 +20,10 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jars/jogg-0.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/jars/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="lib/jars/gdx.jar" sourcepath="lib/jars/gdx-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jars/gdx-backend-lwjgl-natives.jar"/>
+	<classpathentry kind="lib" path="lib/jars/gdx-backend-lwjgl.jar"/>
+	<classpathentry kind="lib" path="lib/jars/gdx-natives.jar"/>
+	<classpathentry kind="lib" path="lib/jars/jinput.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
