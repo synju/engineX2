@@ -1,7 +1,8 @@
 package pathfinding;
 
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import enginex.EngineX;
@@ -9,57 +10,49 @@ import enginex.GameObject;
 
 @SuppressWarnings("serial")
 public class PathFinder extends GameObject {
-	boolean					initialized					= false;
+	boolean initialized = false;
 
 	// Check closedList for Path Nodes.. Ordered!
-	boolean					pathFound						= false;
+	boolean pathFound = false;
 
-	ArrayList<Node>	openList						= new ArrayList<Node>();
-	ArrayList<Node>	closedList					= new ArrayList<Node>();
-	ArrayList<Node>	deadList						= new ArrayList<Node>();
-	ArrayList<Node>	pathNodes						= new ArrayList<>();
-	ArrayList<Node>	nodes								= new ArrayList<>();
+	ArrayList<Node>	openList		= new ArrayList<>();
+	ArrayList<Node>	closedList	= new ArrayList<>();
+	ArrayList<Node>	deadList		= new ArrayList<>();
+	ArrayList<Node>	pathNodes		= new ArrayList<>();
+	ArrayList<Node>	nodes				= new ArrayList<>();
 
-	boolean					visible							= false;
-	boolean					pathFindingEnabled	= false;
-	boolean					slowSearchEnabled		= false;
+	boolean	visible						= false;
+	boolean	slowSearchEnabled	= false;
 
-	float						w										= 0;
-	float						h										= 0;
+	float	w	= 0;
+	float	h	= 0;
 
-	boolean					stage1Complete			= false;
-	boolean					stage2Complete			= false;
-	boolean					stage3Complete			= false;
-	boolean					canSearch						= false;
-	boolean					canUpdate						= false;
+	boolean	stage1Complete	= false;
+	boolean	stage2Complete	= false;
+	boolean	stage3Complete	= false;
+	boolean	canSearch				= false;
+	boolean	canUpdate				= false;
+	boolean	canReturnPath		= false;
 
-	Node						currentNode;
+	Node currentNode;
 
-	boolean					printPathNodes			= false;
-	boolean 				noPath 							= false;
+	boolean	printPathNodes	= false;
+	boolean	noPath					= false;
 	
+	// For Debugging, default: false
+	boolean checkLoops 			= false;
+	boolean pathFinding 		= false;
+	boolean mouseDown 			= false;
+
 	public PathFinder(EngineX game) {
 		super(game);
-		resetNodes(nodes);
-	}
-
-	public PathFinder(EngineX game, ArrayList<Node> nodes) {
-		super(game);
-		resetNodes(nodes);
-	}
-
-	public ArrayList<Node> getPathNodes(ArrayList<Node> nodes) {
-		this.nodes = nodes;
-		pathFindingEnabled = true;
-		pathfind();
-		return closedList;
 	}
 
 	public void init() {
 		if(!initialized)
 			// Set Width and Height of PathFinder entity...
 			if(w == 0 && h == 0)
-			setWH();
+				setWH();
 
 		initialized = true;
 	}
@@ -74,40 +67,112 @@ public class PathFinder extends GameObject {
 		init();
 	}
 
-	/** 
-	 * Finds the Shortest Path between Node Start Node and End Node
-	 */
-	void pathfind() {
-		if(pathFindingEnabled) {
-			System.out.println("finding shortest path...");
-			if(canSearch()) {
-				while(!pathFound && !noPath) {
-					while(!stage3Complete) {
-						if(!stage1Complete)
-							stage1();
-
-						if(stage1Complete && !stage2Complete)
-							stage2();
-
-						if(stage2Complete && !stage3Complete)
-							stage3();
+	public void applyShortestPath(ArrayList<Node> pathNodes, ArrayList<Node> nodes) {
+		try {
+			this.nodes = nodes;
+			ArrayList<Node> shortestPath = new ArrayList<>();
+			
+			if(isEmpty()) pathNodes = null;
+			if(!canSearch()) pathNodes = null;
+			
+			pathfind();
+			
+			if(canReturnPath) {
+				Node tempNode = null;
+				
+				for(Node n:getNodes()) {
+					if(n.type == Node.END) {
+						tempNode = n.parentNode;
+						shortestPath.add(n);
 					}
 				}
+				
+				if(tempNode.type != Node.START) {
+					shortestPath.add(tempNode);
+					tempNode = tempNode.parentNode;
+				}
+	
+				shortestPath.add(tempNode);
+	
+				Collections.reverse(shortestPath);
 			}
-
-			if(!noPath)
-				System.out.println("shortest path found...");
-			else
-				System.out.println("no path...");
-			pathFindingEnabled = false;
-			pathFound = false;
+			
+			pathNodes = shortestPath;
+		}
+		catch(Exception e) {
+			pathNodes = null;
 		}
 	}
 	
+	private boolean isEmpty() {
+		boolean empty = true;
+		
+		for(Node n:getNodes()) {
+			if(n.type != Node.OPEN) {
+				System.out.println("No path to calculate");
+				empty = false;
+				return empty;
+			}
+		}
+		
+		return empty;
+	}
+	
+	private void clearPathHistory() {
+		openList		= new ArrayList<>();
+		closedList	= new ArrayList<>();
+		deadList		= new ArrayList<>();
+		pathNodes		= new ArrayList<>();
+		noPath 			= false;
+		for(Node n:getNodes())
+			if(n.type == Node.SCOUTED_AREA || n.type == Node.PATH)
+				n.type = Node.OPEN;
+	}
+
+	/** 
+	 * Finds the Shortest Path between Node Start Node and End Node
+	 */
+	private void pathfind() {
+		clearPathHistory();
+		System.out.println("finding shortest path...");
+		if(canSearch()) {
+			while(!pathFound && !noPath) {
+				if(checkLoops) System.out.println("in loop 1");
+				while(!stage3Complete) {
+					if(checkLoops) System.out.println("in loop 2");
+					if(!stage1Complete)
+						stage1();
+
+					if(stage1Complete && !stage2Complete)
+						stage2();
+
+					if(stage2Complete && !stage3Complete)
+						stage3();
+				}
+				stage1Complete = false;
+				stage2Complete = false;
+				stage3Complete = false;
+			}
+		}
+
+		if(!noPath) {
+			System.out.println("shortest path found...");
+			canReturnPath = true;
+		}
+		else
+			System.out.println("no path...");
+
+		pathFound = false;
+	}
+
 	public void resetNodes(ArrayList<Node> nodes) {
 		for(Node n:nodes)
-			if(n.type == Node.PATH || n.type == Node.SCOUTED_AREA || n.type == Node.HOVER)
+			if(n.type != Node.PATH || n.type == Node.SCOUTED_AREA)
 				n.type = Node.OPEN;
+
+		//		for(Node n:nodes)
+		//			if(n.type != Node.PATH || n.type == Node.SCOUTED_AREA || n.type == Node.HOVER)
+		//				n.type = Node.OPEN;
 	}
 
 	/**
@@ -228,6 +293,7 @@ public class PathFinder extends GameObject {
 		}
 
 		while(tempNode.type != Node.START) {
+			if(checkLoops) System.out.println("in loop 3");
 			tempNode.type = Node.PATH;
 			tempNode = tempNode.parentNode;
 		}
@@ -289,10 +355,11 @@ public class PathFinder extends GameObject {
 	}
 
 	public ArrayList<Node> getNodes() {
-		if(nodes.isEmpty())
-			return getState().nodes;
-		else
-			return nodes;
+		return this.nodes;
+		//		if(nodes.isEmpty())
+		//			return getState().nodes;
+		//		else
+		//			return nodes;
 	}
 
 	public boolean nodeInList(Node a, ArrayList<Node> list) {
@@ -305,12 +372,14 @@ public class PathFinder extends GameObject {
 
 		return false;
 	}
-
-	public void keyReleased(KeyEvent e) {
-		// START PathFinding!!!
-		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			if(!pathFindingEnabled)
-				pathFindingEnabled = true;
-		}
+	
+	public void mousePressed(MouseEvent e) {
+		super.mousePressed(e);
+		mouseDown = true;
+	}
+	
+	public void mouseReleased(MouseEvent e) {
+		super.mouseReleased(e);
+		mouseDown = false;
 	}
 }

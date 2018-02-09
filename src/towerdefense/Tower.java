@@ -20,6 +20,8 @@ public class Tower extends GameObject {
 	boolean				hover				= false;
 	boolean				moveable		= false;
 	boolean				pointerDown	= false;
+	
+	boolean captured = false;
 
 	Point					m;
 
@@ -40,8 +42,20 @@ public class Tower extends GameObject {
 		m = game.getMousePosition();
 		updateBounds();
 		hover = contains(m);
-
+		
+		checkCaptured();
+		
 		if(pointerDown) {
+			if(hover)
+				captured = true;
+		}
+		else {
+			captured = false;
+		}
+	}
+	
+	void checkCaptured() {
+		if(captured) {
 			this.x = m.x - this.w / 2;
 			this.y = m.y - this.h / 2;
 		}
