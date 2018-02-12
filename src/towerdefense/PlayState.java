@@ -13,7 +13,7 @@ public class PlayState extends State {
 //	ArrayList<Tower> towers;
 //	Monster m;
 	
-	Little_GUI lg;
+//	Little_GUI lg;
 
 	protected PlayState(TowerDefense game) {
 		super(game);
@@ -24,7 +24,7 @@ public class PlayState extends State {
 		if(initialized)
 			return;
 		
-		lg = new Little_GUI(game);
+//		lg = new Little_GUI(game);
 		
 //		towers = new ArrayList<Tower>();
 //		towers.add(new Tower(game, 1*50, 1*50, 50, 50, true));
@@ -36,7 +36,7 @@ public class PlayState extends State {
 	public void update() {
 		create();
 		
-		lg.update();
+//		lg.update();
 		
 //		m.update();
 //		for(Tower tower:towers)
@@ -44,7 +44,7 @@ public class PlayState extends State {
 	}
 
 	public void render(Graphics2D g) {
-		lg.render(g);
+//		lg.render(g);
 		
 //		for(Tower tower:towers)
 //			tower.render(g);
@@ -52,14 +52,14 @@ public class PlayState extends State {
 	}
 
 	public void mousePressed(MouseEvent e) {
-		lg.mousePressed(e);
+//		lg.mousePressed(e);
 		
 //		for(Tower tower:towers)
 //				tower.mousePressed(e);
 	}
 	
 	public void mouseReleased(MouseEvent e) {
-		lg.mouseReleased(e);
+//		lg.mouseReleased(e);
 		
 //		for(Tower tower:towers)
 //				tower.mouseReleased(e);
@@ -69,7 +69,7 @@ public class PlayState extends State {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
 			game.exit();
 		
-		if(e.getKeyCode() == KeyEvent.VK_I)
-			lg.toggleMenu();
+//		if(e.getKeyCode() == KeyEvent.VK_I)
+//			lg.toggleMenu();
 	}
 }

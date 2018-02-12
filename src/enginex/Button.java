@@ -35,7 +35,7 @@ public class Button extends GameObject {
 		this.w = w;
 		this.h = h;
 	}
-
+	
 	public Button(EngineX game, int x, int y, int w, int h) {
 		super(game);
 		this.game = game;
@@ -125,12 +125,12 @@ public class Button extends GameObject {
 			soundPlayed = false;
 		}
 	}
-
+	
 	public void setLocation(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
-
+	
 	public void setImages(String defaultImagePath, String hoverImagePath) {
 		defaultImage = new ImageIcon(defaultImagePath).getImage();
 		hoverImage = new ImageIcon(hoverImagePath).getImage();
