@@ -12,38 +12,37 @@ import enginex.GameObject;
 @SuppressWarnings("serial")
 public class Node extends GameObject {
 	public int id;
-	
-	float											x;
-	float											y;
-	float											w;
-	float											h;
 
-	public Node								parentNode;
+	float	x;
+	float	y;
+	float	w;
+	float	h;
 
-	public double							tempG						= 0;
-	public double							gScore					= 0;
-	public double							hScore					= 0;
-	public double							fScore					= 0;
-	boolean										drawValues			= false;
-	boolean										cornersEnabled	= true;
+	public Node parentNode;
 
-	public static final int		OPEN						= 0;
-	public static final int		CLOSED					= 1;
-	public static final int		START						= 2;
-	public static final int		END							= 3;
-	public static final int		HOVER						= 4;
-	public static final int		SCOUTED_AREA		= 5;
-	public static final int		PATH						= 6;
+	public double	tempG			= 0;
+	public double	gScore			= 0;
+	public double	hScore			= 0;
+	public double	fScore			= 0;
+	boolean			drawValues		= false;
+	boolean			cornersEnabled	= true;
 
-	public static final Color	RED							= new Color(255, 0, 0);
-	public static final Color	GREEN						= new Color(0, 255, 0);
-	public static final Color	BLUE						= new Color(0, 0, 255);
-	public static final Color	BLACK						= new Color(0, 0, 0);
-	public static final Color	OUTLINE					= new Color(15, 15, 30);
-	public static final Color	GRAY						= new Color(100, 100, 100);
+	public static final int	OPEN			= 0;
+	public static final int	CLOSED			= 1;
+	public static final int	START			= 2;
+	public static final int	END				= 3;
+	public static final int	SCOUTED_AREA	= 4;
+	public static final int	PATH			= 5;
 
-	public int								type						= OPEN;
-	Color											outlineC				= OUTLINE;
+	public static final Color	RED		= new Color(255, 0, 0);
+	public static final Color	GREEN	= new Color(0, 255, 0);
+	public static final Color	BLUE	= new Color(0, 0, 255);
+	public static final Color	BLACK	= new Color(0, 0, 0);
+	public static final Color	OUTLINE	= new Color(15, 15, 30);
+	public static final Color	GRAY	= new Color(100, 100, 100);
+
+	public int	type		= OPEN;
+	Color		outlineC	= OUTLINE;
 
 	public Node(EngineX game, float x, float y, float w, float h) {
 		super(game);
@@ -308,34 +307,29 @@ public class Node extends GameObject {
 				return true;
 			}
 		}
-		catch(Exception e) {
-		}
+		catch(Exception e) {}
 		return false;
 	}
 
 	public void render(Graphics2D g) {
-		if(type == OPEN) {
+		if(type == OPEN)
 			g.setColor(BLACK);
-		}
-		if(type == CLOSED) {
+
+		if(type == CLOSED)
 			g.setColor(GRAY);
-		}
-		if(type == START) {
+
+		if(type == START)
 			g.setColor(RED);
-		}
-		if(type == END) {
+
+		if(type == END)
 			g.setColor(GREEN);
-		}
-		if(type == HOVER) {
-			g.setColor(BLUE);
-		}
-		if(type == SCOUTED_AREA) {
-			// g.setColor(BLACK);
+
+		if(type == SCOUTED_AREA)
 			g.setColor(new Color(0, 0, 100));
-		}
-		if(type == PATH) {
+
+		if(type == PATH)
 			g.setColor(new Color(50, 100, 50));
-		}
+
 		g.fillRect((int)(x * w), (int)(y * h), (int)w, (int)h);
 
 		// OUTLINE...
@@ -344,8 +338,8 @@ public class Node extends GameObject {
 
 		PathFinder b = ((PathfinderState)game.stateMachine.getCurrentState()).pathfinder;
 		if(b.nodeExists(this, b.openList)) {
-			int cv = 60;
-			g.setColor(new Color(cv, cv, cv));
+			int colorValue = 60;
+			g.setColor(new Color(colorValue, colorValue, colorValue));
 		}
 
 		// Draw Values.

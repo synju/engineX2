@@ -11,6 +11,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -86,6 +87,36 @@ public class EngineX implements Runnable {
 
 		window.setResizable(sizeable);
 		window.setVisible(true);
+	}
+	
+	protected EngineX(String gameName, ArrayList<String> config) {
+		this.gameName = gameName;
+
+		construct();
+		
+		try {
+			for(String v:config) {
+				// Maximized
+				if(v=="maximized:true") {
+					maximizeWindow();
+					window.setVisible(true);
+					this.width = window.getSize().width;
+					this.height = window.getSize().height;
+				}
+				
+				// Sizable
+				if(v=="sizable:true") {
+					window.setResizable(true);
+				}
+				else if(v=="sizeable:false") {
+					window.setResizable(false);
+				}
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			exit();
+		}
 	}
 
 	void construct() {
@@ -164,6 +195,10 @@ public class EngineX implements Runnable {
 				exit();
 			}
 		});
+	}
+	
+	void maximizeWindow() {
+		window.setExtendedState(window.getExtendedState()|JFrame.MAXIMIZED_BOTH);
 	}
 
 	void updateWindow() {

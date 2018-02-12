@@ -4,21 +4,21 @@ import enginex.EngineX;
 
 public class Game extends EngineX {
 	// Window Positions
-	public static final int LEFT = 2250;
-	public static final int RIGHT = 2250;
-	
-	MenuState							menuState;
-	PlayState							playState;
+	public static final int	LEFT	= 2250;
+	public static final int	RIGHT	= 2250;
 
-	public final int			MENU			= 0;
-	public final int			PLAY			= 1;
+	MenuState	menuState;
+	PlayState	playState;
 
-	public ProfileManager	profileManager;
+	public final int	MENU	= 0;
+	public final int	PLAY	= 1;
+
+	public ProfileManager profileManager;
 
 	Game() {
 		super("Flower Shop", 800, 600, false, false);
 		window.setVisible(true);
-//		window.setLocation(RIGHT, 200);
+		//		window.setLocation(RIGHT, 200);
 	}
 
 	public void init() {

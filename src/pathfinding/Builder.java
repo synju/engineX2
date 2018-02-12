@@ -11,6 +11,7 @@ import enginex.GameObject;
 public class Builder extends GameObject {
 	boolean	mouseDown		= false;
 	int			currentKey	= 1;
+	boolean rightClick 	= false;
 
 	/**
 	 * Constructor
@@ -27,39 +28,45 @@ public class Builder extends GameObject {
 	public void update() {
 		try {
 			if(mouseDown) {
-				// START NODE TYPE
-				if(currentKey == 1) {
-					for(Node n:getState().nodes) {
-						if(n.type == Node.START) {
-							n.type = Node.OPEN;
-						}
-					}
-					currentNodeHover().type = Node.START;
-					getPathFinder().visible = true;
-				}
-
-				// CLOSED NODE TYPE... Basically a Wall...
-				if(currentKey == 2) {
-					currentNodeHover().type = Node.CLOSED;
-				}
-
-				// END NODE TYPE... The Destination Node....
-				if(currentKey == 3) {
-					for(Node n:getState().nodes) {
-						if(n.type == Node.END) {
-							n.type = Node.OPEN;
-						}
-					}
-					currentNodeHover().type = Node.END;
-				}
-
-				// OPEN NODE TYPE... Used as an Eraser in the Builder.....
-				if(currentKey == 4) {
+				if(rightClick) {
 					currentNodeHover().type = Node.OPEN;
+				}
+				else {
+				// START NODE TYPE
+					if(currentKey == 1) {
+						for(Node n:getState().nodes) {
+							if(n.type == Node.START) {
+								n.type = Node.OPEN;
+							}
+						}
+						currentNodeHover().type = Node.START;
+						getPathFinder().visible = true;
+					}
+	
+					// CLOSED NODE TYPE... Basically a Wall...
+					if(currentKey == 2) {
+						currentNodeHover().type = Node.CLOSED;
+					}
+	
+					// END NODE TYPE... The Destination Node....
+					if(currentKey == 3) {
+						for(Node n:getState().nodes) {
+							if(n.type == Node.END) {
+								n.type = Node.OPEN;
+							}
+						}
+						currentNodeHover().type = Node.END;
+					}
+	
+					// OPEN NODE TYPE... Used as an Eraser in the Builder.....
+					if(currentKey == 4) {
+						currentNodeHover().type = Node.OPEN;
+					}
 				}
 			}
 		}
 		catch(Exception e) {
+			// Do Nothing...
 		}
 	}
 
@@ -101,6 +108,10 @@ public class Builder extends GameObject {
 	 */
 	public void mousePressed(MouseEvent e) {
 		mouseDown = true;
+		
+		if(e.getButton() == MouseEvent.BUTTON3) {
+			rightClick = true;
+		}
 	}
 
 	/**
@@ -108,6 +119,9 @@ public class Builder extends GameObject {
 	 */
 	public void mouseReleased(MouseEvent e) {
 		mouseDown = false;
+		
+		if(e.getButton() == MouseEvent.BUTTON3)
+			rightClick = false;
 	}
 
 	/**

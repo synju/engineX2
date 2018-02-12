@@ -16,6 +16,12 @@ public class Util {
 		g.setColor(Color.WHITE);
 		g.drawString(text, x, y);
 	}
+	
+	public static void drawText(int x, int y, String text, int size, Color color, Graphics2D g) {
+		g.setFont(new Font("Arial", Font.BOLD, size));
+		g.setColor(color);
+		g.drawString(text, x, y);
+	}
 
 	public static void drawText(int x, int y, String text, Graphics2D g) {
 		g.setFont(new Font("Arial", Font.PLAIN, 12));
