@@ -1,17 +1,22 @@
 package towerdefense;
 
+import java.util.ArrayList;
+
 import enginex.EngineX;
 
 public class TowerDefense extends EngineX {
 	PlayState					playState;
 	public final int	PLAY	= 0;
+	static ArrayList<String> config = new ArrayList<>();
 
 	public static void main(String[] args) {
+		config.add("maximized:true");
+		config.add("sizable:false");
 		new TowerDefense().init();
 	}
 
 	TowerDefense() {
-		super("Tower Defense", 800*2, 450*2);
+		super("Tower Defense", 1136, 640);
 	}
 
 	public void init() {

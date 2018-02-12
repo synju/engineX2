@@ -7,6 +7,7 @@ public class ZombieApocalypse extends EngineX {
 
 	ZombieApocalypse(String gameName) {
 		super(gameName);
+		window.setVisible(true);
 	}
 
 	public void init() {

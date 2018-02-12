@@ -2,10 +2,10 @@ package pathfinding;
 
 import enginex.EngineX;
 
-public class Pathfinder extends EngineX {
+public class Pathfinding extends EngineX {
 	PathfinderState ps;
 
-	protected Pathfinder(String gameName, int w, int h) {
+	protected Pathfinding(String gameName, int w, int h) {
 		super(gameName, w, h);
 	}
 
@@ -17,6 +17,6 @@ public class Pathfinder extends EngineX {
 	}
 	
 	public static void main(String[] args) {
-		new Pathfinder("Pathfinder", 320, 240).init();
+		new Pathfinding("Pathfinder", 800, 600).init();
 	}
 }

@@ -8,39 +8,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import enginex.FileManager;
 import enginex.GameObject;
 
 @SuppressWarnings("serial")
 public class Player extends GameObject {
-	Platformer						game;
-	double								x;
-	double								y;
-	int										w								= 50;
-	int										h								= 50;
-	Color									color						= Color.RED;
-	boolean								moveLeft				= false;
-	boolean								moveRight				= false;
-	boolean								moveUp					= false;
-	boolean								moveDown				= false;
+	Platformer	game;
+	double		x;
+	double		y;
+	int			w			= 50;
+	int			h			= 50;
+	Color		color		= Color.RED;
+	boolean		moveLeft	= false;
+	boolean		moveRight	= false;
+	boolean		moveUp		= false;
+	boolean		moveDown	= false;
 
-	int										speed						= 5;
+	int		speed		= 5;
 	// float jumpSpeed = 8.61f;
-	float									jumpSpeed				= 6.41f;
-	boolean								jumpDynamic			= false;
+	float	jumpSpeed	= 6.41f;
+	boolean	jumpDynamic	= false;
 
-	float									velocityX, velocityY;
+	float velocityX, velocityY;
 
-	float									gravity					= 0.35f;
-	float									maxGravity			= 12f;
-	boolean								gravityEnabled	= true;
-	FileManager						fm							= new FileManager();
+	float		gravity			= 0.35f;
+	float		maxGravity		= 12f;
+	boolean		gravityEnabled	= true;
+	FileManager	fm				= new FileManager();
 
-	ArrayList<Collidable>	clist						= new ArrayList<>();
+	ArrayList<Collidable> clist = new ArrayList<>();
 
-	MovementContainer			mc;
-	boolean								renderMC				= true;
-	boolean								correction			= true;
-	boolean								mcCorrection		= false;
+	MovementContainer	mc;
+	boolean				renderMC		= true;
+	boolean				correction		= true;
+	boolean				mcCorrection	= false;
 
 	public Player(Platformer game, int x, int y) {
 		super(game);

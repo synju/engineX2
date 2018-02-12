@@ -7,6 +7,7 @@ public class DriftScape extends EngineX {
 
 	protected DriftScape(String gameName, int w, int h, boolean sizeable, boolean autoAdjust) {
 		super(gameName, w, h, sizeable, true);
+		window.setVisible(true);
 	}
 
 	public void init() {
