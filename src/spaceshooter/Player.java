@@ -23,6 +23,8 @@ public class Player {
 	boolean	right	= false;
 	boolean	up		= false;
 	boolean	down	= false;
+	
+	boolean shooting = false;
 
 	float	moveX	= 0f;
 	float	moveY	= 0f;
@@ -45,6 +47,8 @@ public class Player {
 		move();
 
 		updateBullets();
+		
+		shoot();
 	}
 
 	public PlayState getState() {
@@ -100,10 +104,12 @@ public class Player {
 	}
 
 	public void shoot() {
-		if(bulletCooldown == 0) {
-			if(bullets.size() < maxBullets) {
-				bullets.add(new PlayerBullet((int)this.x + WIDTH / 2, (int)this.y));
-				bulletCooldown = bulletCooldownMax;
+		if(shooting) {
+			if(bulletCooldown == 0) {
+				if(bullets.size() < maxBullets) {
+					bullets.add(new PlayerBullet((int)this.x + WIDTH / 2, (int)this.y));
+					bulletCooldown = bulletCooldownMax;
+				}
 			}
 		}
 	}
@@ -132,6 +138,9 @@ public class Player {
 			up = true;
 		if(e.getKeyCode() == KeyEvent.VK_S)
 			down = true;
+		
+		if(e.getKeyCode() == KeyEvent.VK_SPACE)
+			shooting = true;
 	}
 
 	public void keyReleased(KeyEvent e) {
@@ -143,6 +152,9 @@ public class Player {
 			up = false;
 		if(e.getKeyCode() == KeyEvent.VK_S)
 			down = false;
+		
+		if(e.getKeyCode() == KeyEvent.VK_SPACE)
+			shooting = false;
 	}
 
 	public void joystickPoll(Component[] components) {
@@ -178,9 +190,14 @@ public class Player {
 			}
 
 			// Button 2
-			if(componentName.equals("Button 2"))
-				if(pollData == 1.0)
-					shoot();
+			if(componentName.equals("Button 2")) {
+				if(pollData == 1.0) {
+					shooting = true;
+				}
+				else {
+					shooting = false;
+				}
+			}
 		}
 	}
 }
