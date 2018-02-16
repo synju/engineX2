@@ -15,6 +15,7 @@ public class PlayState extends State {
 	public Controller joystick;
 
 	Player player;
+	WaveHandler waveHandler;
 
 	ScrollingBG spaceBG = new ScrollingBG("res/spaceshooter/spacebg.png", 0.2f, 0, 0, 800, 600);
 
@@ -41,6 +42,7 @@ public class PlayState extends State {
 	public void create() {
 		initControllers();
 		player = new Player(game, game.width / 2 - Player.WIDTH / 2, game.height - Player.HEIGHT * 2);
+		waveHandler = new WaveHandler(game);
 	}
 
 	public void update() {
@@ -49,6 +51,7 @@ public class PlayState extends State {
 
 		spaceBG.update();
 		player.update();
+		waveHandler.update();
 	}
 
 	public void render(Graphics2D g) {
@@ -57,6 +60,7 @@ public class PlayState extends State {
 
 		spaceBG.render(g);
 		player.render(g);
+		waveHandler.render(g);
 	}
 
 	public void keyPressed(KeyEvent e) {
