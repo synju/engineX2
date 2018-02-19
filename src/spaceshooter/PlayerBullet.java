@@ -1,30 +1,81 @@
 package spaceshooter;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.util.ArrayList;
 
-public class PlayerBullet {
+import enginex.GameObject;
+
+@SuppressWarnings("serial")
+public class PlayerBullet extends GameObject {
+	Spaceshooter game;
+
 	double	x;
 	double	y;
-	float	speed				= 3f;
-	int		width				= 10;
-	int		height				= 10;
-	boolean	outOfWindowBounds	= false;
+	int		width	= 10;
+	int		height	= 10;
 
-	public PlayerBullet(int x, int y) {
+	ArrayList<Monster> monsters = new ArrayList<>();
+
+	float	speed	= 7f;
+	int		damage	= 10;
+
+	boolean	visible		= true;
+	boolean	used		= false;
+	boolean	outOfBounds	= false;
+	boolean	drawBounds	= false;
+
+	public PlayerBullet(Spaceshooter game, int x, int y) {
+		super(game);
+		this.game = game;
 		this.x = x - width / 2;
 		this.y = y;
+		updateBounds();
 	}
 
 	public void update() {
 		this.y -= speed;
-		if(!outOfWindowBounds)
+		if(!outOfBounds)
 			if(this.y < 0 - height)
-				outOfWindowBounds = true;
+				outOfBounds = true;
+
+		updateBounds();
+		monsterCollision();
+	}
+
+	void monsterCollision() {
+		// List of Monsters
+		monsters = getCurrentState().waveHandler.monsters;
+
+		for(Monster m:monsters) {
+			if(isColliding(m.bounds)) {
+				m.deductLife(damage);
+				visible = false;
+				used = true;
+				break;
+			}
+		}
+
+	}
+
+	public PlayState getCurrentState() {
+		return (PlayState)game.stateMachine.getCurrentState();
+	}
+
+	protected void updateBounds() {
+		bounds.setLocation(new Point((int)x, (int)y));
+		bounds.setSize(new Dimension(width, height));
 	}
 
 	public void render(Graphics2D g) {
-		g.setColor(Color.WHITE);
-		g.fillRect((int)x, (int)y, width, height);
+		if(visible)
+			g.drawImage(getCurrentState().res.playerBullet, (int)x, (int)y, null);
+
+		if(drawBounds) {
+			g.setColor(Color.WHITE);
+			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+		}
 	}
 }

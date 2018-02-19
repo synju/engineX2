@@ -2,9 +2,13 @@ package spaceshooter;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
 
 import enginex.Button;
 import enginex.State;
@@ -20,8 +24,9 @@ public class MenuState extends State {
 	ArrayList<Button>	buttons	= new ArrayList<>();
 	Button				btnPlay;
 	Button				btnQuit;
-	
-	ScrollingBG spaceBG = new ScrollingBG("res/spaceshooter/spacebg.png", 0.0f, 0, 0, 800, 600);
+
+	ScrollingBG	spaceBG			= new ScrollingBG("res/spaceshooter/spacebg.png", 0.0f, 0, 0, 800, 600);
+	Image		crosshairImage	= new ImageIcon("res/crosshair.png").getImage();
 
 	public MenuState(Spaceshooter game) {
 		super(game);
@@ -44,6 +49,7 @@ public class MenuState extends State {
 	}
 
 	public void create() {
+		game.hideDefaultCursor();
 		initControllers();
 		createButtons();
 	}
@@ -67,12 +73,24 @@ public class MenuState extends State {
 	public void render(Graphics2D g) {
 		// Smooth Images
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		
+
 		spaceBG.render(g);
 
 		// Buttons
 		for(Button b:buttons)
 			b.render(g);
+
+		// Cursor
+		renderCrosshair(g);
+	}
+
+	void renderCrosshair(Graphics2D g) {
+		try {
+			Point p = game.getMousePosition();
+			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+			g.drawImage(crosshairImage, (int)p.getX() - 10, (int)p.getY() - 10, null);
+		}
+		catch(Exception e) {}
 	}
 
 	public void keyPressed(KeyEvent e) {}
