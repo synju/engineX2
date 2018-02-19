@@ -119,8 +119,8 @@ public class WaveHandler {
 
 	public void checkComplete() {
 		// Check player alive
-		if(((PlayState)(game.stateMachine.getCurrentState())).player.lives == 0)
-			getCurrentState().gameOver();
+		if(((PlayState)(game.stateMachine.getCurrentState())).player.alive == false)
+			getCurrentState().gameOver = true;
 
 		// Check all monsters dead
 		boolean monstersAlive = false;

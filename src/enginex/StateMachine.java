@@ -33,6 +33,10 @@ public class StateMachine implements KeyListener, MouseListener, MouseWheelListe
 		}
 		return null;
 	}
+	
+	public State getState(int stateIndex) {
+		return states.get(stateIndex);
+	}
 
 	public void setState(int stateIndex) {
 		if(states.get(stateIndex) != null)
