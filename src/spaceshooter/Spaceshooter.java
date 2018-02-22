@@ -3,10 +3,9 @@ package spaceshooter;
 import enginex.EngineX;
 
 public class Spaceshooter extends EngineX {
-	MenuState		menuState;
-	PlayState		playState;
+	MenuState			menuState;
+	PlayState			playState;
 	PauseState		pauseState;
-	GameOverState	gameOverState;
 
 	public final int	MENU		= 0;
 	public final int	PAUSE		= 1;

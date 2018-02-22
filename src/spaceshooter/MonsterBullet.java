@@ -10,45 +10,45 @@ import enginex.GameObject;
 
 @SuppressWarnings("serial")
 public class MonsterBullet extends GameObject {
-	Spaceshooter game;
-
-	double	x;
-	double	y;
-	int		width	= 10;
-	int		height	= 10;
-
+	Spaceshooter						game;
+	
+	double									x;
+	double									y;
+	int											width							= 10;
+	int											height						= 10;
+	
 	public static final int	TYPE_CONVERTED		= 141411;
 	public static final int	TYPE_POSSESSED		= 241412;
-	public static final int	TYPE_MINION			= 341413;
-	public static final int	TYPE_OVERLORD		= 441414;
-	public static final int	TYPE_DEMON			= 541415;
+	public static final int	TYPE_MINION				= 341413;
+	public static final int	TYPE_OVERLORD			= 441414;
+	public static final int	TYPE_DEMON				= 541415;
 	public static final int	TYPE_FALLEN_ANGEL	= 776;
-	public static final int	TYPE_DEVIL			= 666;
-
-	int type = TYPE_CONVERTED;
-
-	Image	image;
-	int		speed	= 10;
-	int		damage	= 10;
-
-	boolean	visible		= true;
-	boolean	used		= false;
-	boolean	outOfBounds	= false;
-	boolean	drawBounds	= false;
-
-	Player player;
-
+	public static final int	TYPE_DEVIL				= 666;
+	
+	int											type							= TYPE_CONVERTED;
+	
+	Image										image;
+	int											speed							= 10;
+	int											damage						= 10;
+	
+	boolean									visible						= true;
+	boolean									used							= false;
+	boolean									outOfBounds				= false;
+	boolean									drawBounds				= false;
+	
+	Player									player;
+	
 	MonsterBullet(Spaceshooter game, int x, int y, int type) {
 		super(game);
 		this.game = game;
 		this.x = x - width / 2;
 		this.y = y + 10;
 		this.type = type;
-
+		
 		setupMonsterBullet();
 		updateBounds();
 	}
-
+	
 	public void setupMonsterBullet() {
 		switch(type) {
 			case TYPE_CONVERTED:
@@ -68,17 +68,17 @@ public class MonsterBullet extends GameObject {
 				break;
 			case TYPE_OVERLORD:
 				speed = 8;
-				image = getCurrentState().res.playerBullet;
+				image = getCurrentState().res.overlord_bullet;
 				damage = 40;
 				break;
 			case TYPE_DEMON:
 				speed = 10;
-				image = getCurrentState().res.playerBullet;
+				image = getCurrentState().res.demon_bullet;
 				damage = 50;
 				break;
 			case TYPE_FALLEN_ANGEL:
 				speed = 10;
-				image = getCurrentState().res.playerBullet;
+				image = getCurrentState().res.fallen_angel_bullet;
 				damage = 60;
 				break;
 			case TYPE_DEVIL:
@@ -88,22 +88,22 @@ public class MonsterBullet extends GameObject {
 				break;
 		}
 	}
-
+	
 	public void update() {
 		this.y += speed;
-
+		
 		updateBounds();
 		playerCollision();
-
+		
 		if(this.y > game.height)
 			outOfBounds = true;
 	}
-
+	
 	protected void updateBounds() {
 		bounds.setLocation(new Point((int)x, (int)y));
 		bounds.setSize(new Dimension(width, height));
 	}
-
+	
 	private void playerCollision() {
 		player = getCurrentState().player;
 		if(isColliding(getCurrentState().player.bounds)) {
@@ -112,15 +112,15 @@ public class MonsterBullet extends GameObject {
 			used = true;
 		}
 	}
-
+	
 	public PlayState getCurrentState() {
 		return (PlayState)game.stateMachine.getCurrentState();
 	}
-
+	
 	public void render(Graphics2D g) {
 		if(visible)
 			g.drawImage(image, (int)x, (int)y, null);
-
+		
 		if(drawBounds) {
 			g.setColor(Color.WHITE);
 			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
