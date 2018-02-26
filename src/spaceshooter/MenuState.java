@@ -1,14 +1,11 @@
 package spaceshooter;
 
-import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
-import javax.swing.ImageIcon;
 
 import enginex.Button;
 import enginex.State;
@@ -17,17 +14,19 @@ import net.java.games.input.ControllerEnvironment;
 
 public class MenuState extends State {
 	Spaceshooter			game;
-	boolean						initialized			= false;
+	boolean						initialized		= false;
 	
 	public Controller	joystick;
 	
-	ArrayList<Button>	buttons					= new ArrayList<>();
+	ArrayList<Button>	buttons				= new ArrayList<>();
 	Button						btnPlay;
 	Button						btnQuit;
 	
-	ScrollingBG				spaceBG					= new ScrollingBG("res/spaceshooter/spacebg.png", 0.0f, 0, 0, 800, 600);
-	Image							crosshairImage	= new ImageIcon("res/crosshair.png").getImage();
-	Image							logoImage				= new ImageIcon("res/spaceshooter/logo.png").getImage();
+	ScrollingBG				spaceBG;
+	Image							logoImage;
+	
+	boolean						musicEnabled	= true;
+	boolean						musicPlaying	= false;
 	
 	public MenuState(Spaceshooter game) {
 		super(game);
@@ -50,33 +49,63 @@ public class MenuState extends State {
 	}
 	
 	public void create() {
+		spaceBG = new ScrollingBG(game.res.spaceBG.getPath(), 0.0f, 0, 0, 800, 600);
+		logoImage = game.res.logo.getImage();
+		
+		playMusic();
+		
 		game.hideDefaultCursor();
 		initControllers();
 		createButtons();
 	}
 	
 	public void createButtons() {
-		btnPlay = new Button(game, "Play Game", game.width / 2 - 100, 200, 200, 75, "res/spaceshooter/btnPlay.png", "res/spaceshooter/btnPlay.png", "res/replicants/sfx/buttonHover.ogg");
+		btnPlay = new Button(game, "Play Game", game.width / 2 - 100, 200, 200, 75, game.res.playButton.getPath(), game.res.playButton.getPath(), game.res.buttonHoverSound.getPath());
 		buttons.add(btnPlay);
 		
-		btnQuit = new Button(game, "Quit Game", game.width / 2 - 100, 300, 200, 75, "res/spaceshooter/btnQuit.png", "res/spaceshooter/btnQuit.png", "res/replicants/sfx/buttonHover.ogg");
+		btnQuit = new Button(game, "Quit Game", game.width / 2 - 100, 300, 200, 75, game.res.quitButton.getPath(), game.res.quitButton.getPath(), game.res.buttonHoverSound.getPath());
 		buttons.add(btnQuit);
+	}
+	
+	public void toggleMusic() {
+		if(musicEnabled) {
+			musicEnabled = false;
+			stopMusic();
+		}
+		else {
+			musicEnabled = true;
+			playMusic();
+		}
 	}
 	
 	public void update() {
 		initialize();
 		joyStickPoll();
 		
+		playMusic();
+		
 		for(Button b:buttons)
 			b.update();
 	}
 	
+	public void playMusic() {
+		if(musicEnabled)
+			if(!musicPlaying) {
+				musicPlaying = true;
+				game.res.menuSong.getSound().playSong();
+			}
+	}
+	
+	public void stopMusic() {
+		musicPlaying = false;
+		game.res.menuSong.getSound().stop();
+	}
+	
 	public void render(Graphics2D g) {
-		// Smooth Images
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		
+		// Background
 		spaceBG.render(g);
 		
+		// Logo
 		g.drawImage(logoImage, 10, 100, null);
 		
 		// Buttons
@@ -87,16 +116,18 @@ public class MenuState extends State {
 		renderCrosshair(g);
 	}
 	
-	void renderCrosshair(Graphics2D g) {
+	public void renderCrosshair(Graphics2D g) {
 		try {
 			Point p = game.getMousePosition();
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-			g.drawImage(crosshairImage, (int)p.getX() - 10, (int)p.getY() - 10, null);
+			g.drawImage(game.res.crosshair.getImage(), (int)p.getX() - 10, (int)p.getY() - 10, null);
 		}
 		catch(Exception e) {}
 	}
 	
-	public void keyPressed(KeyEvent e) {}
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_M)
+			toggleMusic();
+	}
 	
 	public void keyReleased(KeyEvent e) {}
 	
@@ -104,6 +135,7 @@ public class MenuState extends State {
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			// Play Button Clicked...
 			if(btnPlay.hover) {
+				stopMusic();
 				game.playState = new PlayState(game);
 				game.stateMachine.states.set(game.PLAY, game.playState);
 				game.stateMachine.states.get(game.PLAY).init();

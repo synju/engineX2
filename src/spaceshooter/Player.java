@@ -58,15 +58,18 @@ public class Player extends GameObject {
 	
 	boolean									drawBounds							= false;
 	
-	Sound										sound										= new Sound("res/spaceshooter/shoot.ogg");
-	Sound										hurt										= new Sound("res/spaceshooter/hurt.ogg");
-	Sound										explosion								= new Sound("res/spaceshooter/explosion.ogg");
+	Sound										shootSound;
+	Sound										hurtSound;
+	Sound										explosionSound;
 	
 	public Player(Spaceshooter game, int x, int y) {
 		super(game);
 		this.game = game;
 		this.x = x;
 		this.y = y;
+		shootSound = game.res.playerShoot.getSound();
+		hurtSound = game.res.playerHurt.getSound();
+		explosionSound = game.res.playerExplosion.getSound();
 	}
 	
 	public void update() {
@@ -83,11 +86,11 @@ public class Player extends GameObject {
 		if(life > 0) {
 			if((life - damage) > 0) {
 				life -= damage;
-				hurt.play();
+				hurtSound.play();
 			}
 			else {
 				life = 0;
-				explosion.play();
+				explosionSound.play();
 			}
 		}
 		
@@ -111,7 +114,7 @@ public class Player extends GameObject {
 	
 	public void render(Graphics2D g) {
 		// Draw Ship
-		g.drawImage(getCurrentState().res.player, (int)x, (int)y, null);
+		g.drawImage(game.res.player.getImage(), (int)x, (int)y, null);
 		
 		// Draw Score
 		Util.drawText(25, 515, "Score: " + Integer.toString(currentScore), 32, Color.WHITE, g);
@@ -143,7 +146,7 @@ public class Player extends GameObject {
 		
 		// Draw Lives
 		for(int i = 0; i < lives; i++) {
-			g.drawImage(getCurrentState().res.player, (50 * i) + 20, game.height - 90, null);
+			g.drawImage(game.res.player.getImage(), (50 * i) + 20, game.height - 90, null);
 		}
 		
 		// Draw Bounds
@@ -197,6 +200,14 @@ public class Player extends GameObject {
 	public void resetPosition() {
 		x = game.width / 2 - Player.WIDTH / 2;
 		y = (game.height - Player.HEIGHT * 2) - 75;
+		
+		// Need to put some place better
+		shooting = false;
+		left = false;
+		right = false;
+		up = false;
+		down = false;
+		bullets = new ArrayList<>();
 	}
 	
 	public void resetScore() {
@@ -261,7 +272,7 @@ public class Player extends GameObject {
 		if(shooting) {
 			if(bulletCooldown == 0) {
 				if(bullets.size() < maxBullets) {
-					sound.play(0.3f);
+					shootSound.play(0.3f);
 					bullets.add(new PlayerBullet(game, (int)this.x + WIDTH / 2, (int)this.y));
 					bulletCooldown = bulletCooldownMax;
 				}

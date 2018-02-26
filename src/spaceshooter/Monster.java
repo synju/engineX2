@@ -29,8 +29,8 @@ public class Monster extends GameObject {
 	
 	boolean										drawBounds							= false;
 	
-	Sound											hurt										= new Sound("res/spaceshooter/hurt2.ogg");
-	Sound											explosion								= new Sound("res/spaceshooter/explosion2.ogg");
+	Sound											hurt;
+	Sound											explosion;
 	
 	// TYPES
 	public static final int		TYPE_CONVERTED					= 141411;
@@ -77,40 +77,42 @@ public class Monster extends GameObject {
 	}
 	
 	private void setupMonster() {
+		hurt = new Sound(game.res.monsterHurt.getPath());
+		explosion = new Sound(game.res.monsterExplosion.getPath());
 		if(type == TYPE_CONVERTED) {
 			currentLife = TYPE_CONVERTED_LIFE;
 			shootTimerMax = 100;
-			image = getCurrentState().res.converted;
+			image = game.res.converted.getImage();
 		}
 		if(type == TYPE_POSSESSED) {
 			currentLife = TYPE_POSSESSED_LIFE;
 			shootTimerMax = 125;
-			image = getCurrentState().res.possessed;
+			image = game.res.possessed.getImage();
 		}
 		if(type == TYPE_MINION) {
 			currentLife = TYPE_MINION_LIFE;
 			shootTimerMax = 150;
-			image = getCurrentState().res.minion;
+			image = game.res.minion.getImage();
 		}
 		if(type == TYPE_OVERLORD) {
 			currentLife = TYPE_OVERLORD_LIFE;
 			shootTimerMax = 175;
-			image = getCurrentState().res.overlord;
+			image = game.res.overlord.getImage();
 		}
 		if(type == TYPE_DEMON) {
 			currentLife = TYPE_DEMON_LIFE;
 			shootTimerMax = 200;
-			image = getCurrentState().res.demon;
+			image = game.res.demon.getImage();
 		}
 		if(type == TYPE_FALLEN_ANGEL) {
 			currentLife = TYPE_FALLEN_ANGEL_LIFE;
 			shootTimerMax = 225;
-			image = getCurrentState().res.fallen_angel;
+			image = game.res.fallen_angel.getImage();
 		}
 		if(type == TYPE_DEVIL) {
 			currentLife = TYPE_DEVIL_LIFE;
 			shootTimerMax = 250;
-			image = getCurrentState().res.devil;
+			image = game.res.devil.getImage();
 		}
 		
 		shootTimer = (int)(Math.random() * shootTimerMax);

@@ -15,14 +15,23 @@ public class Sound {
 	
 	public Sound(String path) {
 		this.path = path;
+		setAudio(path);
+	}
+	public void setAudio(String path) {
+		for(int i = 0; i < 5; i++) {
 		try {
 			audio = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(path));
+				break;
 		}
 		catch(Exception e) {
-			e.printStackTrace();
+				if(i == 0)
+					System.out.println("Failed loading audio 1 time, trying again");
+				else
+					System.out.println("Failed loading audio " + i + 1 + " times, trying again");
+				setAudio(path);
 		}
 	}
-	
+	}
 	public void setGroup(int group) {
 		this.group = group;
 	}

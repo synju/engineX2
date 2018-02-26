@@ -10,12 +10,12 @@ import processing.core.PApplet;
 
 @SuppressWarnings("serial")
 public class Rocket extends GameObject {
-	int			maxMoves;
-	int[]		dna;
-	int			moveIndex	= 0;
-	int			speed;
-	boolean	alive			= true;
-	Point		center;
+	int		maxMoves;
+	int[]	dna;
+	int		moveIndex	= 0;
+	int		speed;
+	boolean	alive		= true;
+	Point	center;
 	boolean	completed	= false;
 	double	d;
 	double	fitness;
@@ -23,13 +23,13 @@ public class Rocket extends GameObject {
 
 	public Rocket(EngineX game, int x, int y, int maxMoves, int speed) {
 		super(game);
-		init(x, y, maxMoves,speed);
+		init(x, y, maxMoves, speed);
 	}
 
 	public Rocket(EngineX game, int x, int y, int[] dna, int maxMoves, int speed) {
 		super(game);
 		this.dna = dna;
-		init(x, y, maxMoves,speed);
+		init(x, y, maxMoves, speed);
 	}
 
 	public void init(int x, int y, int maxMoves, int speed) {
@@ -57,36 +57,36 @@ public class Rocket extends GameObject {
 			x = getState().target.x;
 			y = getState().target.y;
 		}
-		
+
 		if(alive && !completed) {
 			move();
 			collision();
 		}
 	}
-	
+
 	void calcFitness() {
-		float d = PApplet.dist((int)x,(int)y,getState().target.x,getState().target.y);
-		fitness = PApplet.map(d, 0, game.width,game.height,0);
-		
+		float d = PApplet.dist((int)x, (int)y, getState().target.x, getState().target.y);
+		fitness = PApplet.map(d, 0, game.width, game.height, 0);
+
 		if(d < 0)
 			completed = true;
-		
+
 		if(completed) {
 			fitness *= timeScore();
 			fitness *= 10;
 		}
-		
+
 		if(crashed)
 			fitness /= 10;
 	}
-	
+
 	double timeScore() {
 		double timeScore = 1;
-		
+
 		for(int i = 1; i <= 10; i++)
-			if(moveIndex < maxMoves/i)
+			if(moveIndex < maxMoves / i)
 				timeScore = i;
-		
+
 		return timeScore;
 	}
 
@@ -96,7 +96,7 @@ public class Rocket extends GameObject {
 			alive = false;
 			crashed = true;
 		}
-		
+
 		// Environment
 		if(center.x > getState().wall.x && center.x < (getState().wall.x + getState().wall.width) && center.y > getState().wall.y && center.y < (getState().wall.y + getState().wall.height)) {
 			alive = false;

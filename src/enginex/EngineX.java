@@ -1,5 +1,6 @@
 package enginex;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -88,7 +89,9 @@ public class EngineX implements Runnable {
 		window.setResizable(sizeable);
 		window.setVisible(true);
 	}
-	
+	public void smoothRendering(Graphics2D g) {
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+	}
 	protected EngineX(String gameName, ArrayList<String> config) {
 		this.gameName = gameName;
 
@@ -134,8 +137,7 @@ public class EngineX implements Runnable {
 		try {
 			window.dispose();
 		}
-		catch(Exception e) {
-		}
+		catch(Exception e) {}
 
 		window = new JFrame();
 		renderingEngine = new JPanel();
@@ -277,8 +279,7 @@ public class EngineX implements Runnable {
 		try {
 			Thread.sleep(ms);
 		}
-		catch(Exception e) {
-		}
+		catch(Exception e) {}
 	}
 
 	public Point getMousePosition() {

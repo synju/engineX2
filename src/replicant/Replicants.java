@@ -18,10 +18,10 @@ public class Replicants extends EngineX {
 		gameState = new RGameState(this);
 		
 		stateMachine.pushState(menuState);
-//		stateMachine.pushState(gameState);
+		stateMachine.pushState(gameState);
 		
 		stateMachine.states.get(MENU).init();
-//		stateMachine.states.get(GAME).init();
+		stateMachine.states.get(GAME).init();
 		
 		run();
 	}

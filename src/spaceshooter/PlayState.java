@@ -1,13 +1,9 @@
 package spaceshooter;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-
-import javax.swing.ImageIcon;
 
 import enginex.State;
 import enginex.Util;
@@ -23,11 +19,14 @@ public class PlayState extends State {
 	
 	Player						player;
 	WaveHandler				waveHandler;
-	Resources					res							= new Resources();
 	
-	ScrollingBG				spaceBG					= new ScrollingBG("res/spaceshooter/spacebg.png", 0.5f, 0, 0, 800, 600);
-	Image							gameOverImage		= new ImageIcon("res/spaceshooter/gameOver.png").getImage();
+	ScrollingBG				spaceBG;
+	
 	boolean						gameOver				= false;
+	boolean						levelComplete		= false;
+	
+	boolean						musicEnabled		= true;
+	boolean						musicPlaying		= false;
 	
 	public PlayState(Spaceshooter game) {
 		super(game);
@@ -50,19 +49,47 @@ public class PlayState extends State {
 	}
 	
 	public void create() {
+		spaceBG = new ScrollingBG(game.res.spaceBG.getPath(), 0.5f, 0, 0, 800, 600);
+		playMusic();
 		initControllers();
 		gameOver = false;
 		player = new Player(game, game.width / 2 - Player.WIDTH / 2, (game.height - Player.HEIGHT * 2) - 75);
 		waveHandler = new WaveHandler(game);
 	}
 	
+	public void playMusic() {
+		if(musicEnabled)
+			if(!musicPlaying) {
+				musicPlaying = true;
+				game.res.playSong.getSound().playSong();
+			}
+	}
+	
+	public void stopMusic() {
+		musicPlaying = false;
+		game.res.playSong.getSound().stop();
+	}
+	
+	public void toggleMusic() {
+		if(musicEnabled) {
+			stopMusic();
+			musicEnabled = false;
+		}
+		else {
+			playMusic();
+			musicEnabled = true;
+		}
+	}
+	
 	public void update() {
 		initialize();
 		joyStickPoll();
 		
+		playMusic();
+		
 		spaceBG.update();
 		
-		if(!gameOver) {
+		if(!gameOver && !levelComplete) {
 			player.update();
 			waveHandler.update();
 		}
@@ -78,21 +105,48 @@ public class PlayState extends State {
 	
 	public void render(Graphics2D g) {
 		// Smooth Images
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		
-		spaceBG.render(g);
-		
-		if(!gameOver) {
-			player.render(g);
-			waveHandler.render(g);
+		try {
+			spaceBG.render(g);
+			
+			if(!gameOver && !levelComplete) {
+				player.render(g);
+				waveHandler.render(g);
+			}
+			else {
+				if(gameOver && !levelComplete)
+					renderGameOver(g);
+				else if(!gameOver && levelComplete)
+					renderLevelComplete(g);
+				else
+					setMenuState();
+			}
 		}
-		else
-			renderGameOver(g);
+		catch(Exception e) {}
+	}
+	
+	public void setMenuState() {
+		stopMusic();
+		game.menuState = new MenuState(game);
+		game.stateMachine.states.set(game.MENU, game.menuState);
+		game.stateMachine.states.get(game.MENU).init();
+		game.stateMachine.setState(game.MENU);
+	}
+	
+	public void setPlayState() {
+		game.playState = new PlayState(game);
+		game.stateMachine.states.set(game.PLAY, game.playState);
+		game.stateMachine.states.get(game.PLAY).init();
+		game.stateMachine.setState(game.PLAY);
+	}
+	
+	public void renderLevelComplete(Graphics2D g) {
+		// Level Complete Graphic
+		g.drawImage(game.res.levelCompleteImage.getImage(), 0, 0, null);
 	}
 	
 	public void renderGameOver(Graphics2D g) {
 		// Game Over Graphic
-		g.drawImage(gameOverImage, (int)game.width / 2 - 200, 100, null);
+		g.drawImage(game.res.gameOverImage.getImage(), (int)game.width / 2 - 200, 100, null);
 		
 		// Draw Score
 		Util.drawText(250, 295, "Score: " + Integer.toString(player.currentScore), 32, Color.WHITE, g);
@@ -102,42 +156,53 @@ public class PlayState extends State {
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		if(!gameOver)
+		if(!gameOver && !levelComplete)
 			player.keyPressed(e);
+		
+		if(e.getKeyCode() == KeyEvent.VK_M)
+			toggleMusic();
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		if(!gameOver) {
+		if(!gameOver && !levelComplete) {
 			if(e.getKeyCode() == KeyEvent.VK_R) {
-				game.playState = new PlayState(game);
-				game.stateMachine.states.set(game.PLAY, game.playState);
-				game.stateMachine.states.get(game.PLAY).init();
-				game.stateMachine.setState(game.PLAY);
+				setPlayState();
 			}
 			
-			if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+			if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				stopMusic();
 				game.stateMachine.setState(game.PAUSE);
+			}
 			
 			player.keyReleased(e);
 		}
 		else {
-			if(e.getKeyCode() == KeyEvent.VK_ENTER)
-				gameOver();
+			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				if(!gameOver && levelComplete)
+					waveHandler.increaseLevel();
+				else if(gameOver && !levelComplete)
+					setMenuState();
+				else
+					setMenuState();
+			}
 		}
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		if(!gameOver)
+		if(!gameOver && !levelComplete)
 			player.mousePressed(e);
 	}
 	
 	public void mouseReleased(MouseEvent e) {
-		if(!gameOver)
-			player.mouseReleased(e);
+		try {
+			if(!gameOver && !levelComplete)
+				player.mouseReleased(e);
+		}
+		catch(Exception ev) {}
 	}
 	
 	public void joyStickPoll() {
-		if(!gameOver) {
+		if(!gameOver && !levelComplete) {
 			// Update Joystick Input Data
 			if(joystick != null) {
 				// Poll Joystick for updates

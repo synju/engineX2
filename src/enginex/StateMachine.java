@@ -54,24 +54,33 @@ public class StateMachine implements KeyListener, MouseListener, MouseWheelListe
 	}
 
 	void render(Graphics2D g) {
-		if(getCurrentState() != null)
+		// Smooth Images
+		game.smoothRendering(g);
+		
+		if(getCurrentState() != null) {
 			try {
 				getCurrentState().render(g);
 			}
 			catch(Exception e) {
 				e.printStackTrace();
 			}
+		}
 	}
 	
 	void render(Graphics2D g, AffineTransform at) {
-		if(at == null)
-			if(getCurrentState() != null)
+		// Smooth Images
+		game.smoothRendering(g);
+		
+		if(at == null) {
+			if(getCurrentState() != null) {
 				try {
 					getCurrentState().render(g,at);
 				}
 				catch(Exception e) {
 					e.printStackTrace();
 				}
+			}
+		}
 	}
 
 	public void keyPressed(KeyEvent e) {

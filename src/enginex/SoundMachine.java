@@ -53,12 +53,14 @@ public class SoundMachine {
 
 	public void playSong(String path) {
 		new Thread(() -> {
-			for(Sound s:sounds) {
-				if(s.path == path) {
+			for(Sound s:sounds)
+				if(s.path == path)
 					s.playSong();
-				}
-			}
 		}).start();
+				}
+	
+	public void playSongResource(Resource songResource) {
+		songResource.getSound().playSong();
 	}
 
 	public void playSound(String path) {

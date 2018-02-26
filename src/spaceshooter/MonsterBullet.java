@@ -53,37 +53,37 @@ public class MonsterBullet extends GameObject {
 		switch(type) {
 			case TYPE_CONVERTED:
 				speed = 6;
-				image = getCurrentState().res.converted_bullet;
+				image = game.res.converted_bullet.getImage();
 				damage = 10;
 				break;
 			case TYPE_POSSESSED:
 				speed = 6;
-				image = getCurrentState().res.possessed_bullet;
+				image = game.res.possessed_bullet.getImage();
 				damage = 20;
 				break;
 			case TYPE_MINION:
 				speed = 6;
-				image = getCurrentState().res.minion_bullet;
+				image = game.res.minion_bullet.getImage();
 				damage = 30;
 				break;
 			case TYPE_OVERLORD:
 				speed = 8;
-				image = getCurrentState().res.overlord_bullet;
+				image = game.res.overlord_bullet.getImage();
 				damage = 40;
 				break;
 			case TYPE_DEMON:
 				speed = 10;
-				image = getCurrentState().res.demon_bullet;
+				image = game.res.demon_bullet.getImage();
 				damage = 50;
 				break;
 			case TYPE_FALLEN_ANGEL:
 				speed = 10;
-				image = getCurrentState().res.fallen_angel_bullet;
+				image = game.res.fallen_angel_bullet.getImage();
 				damage = 60;
 				break;
 			case TYPE_DEVIL:
 				speed = 10;
-				image = getCurrentState().res.devil_bullet;
+				image = game.res.devil_bullet.getImage();
 				damage = 70;
 				break;
 		}
